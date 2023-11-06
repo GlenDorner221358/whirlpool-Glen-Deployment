@@ -1,7 +1,7 @@
 const express = require('express')
 const router = express()
 const { User, validate } = require('../models/users')
-const bcrypt = require("bcrypt")
+const bcryptjs = require("bcryptjs")
 const multer = require('multer')
 const path = require('path')
 
@@ -49,8 +49,8 @@ router.post("/api/users", uploadUserImage.single('image'), async (req, res) => {
             .send({ message: "User with given email already exist." })
         }
 
-        const salt = await bcrypt.genSalt(Number(process.env.SALT))
-        const hashPassword = await bcrypt.hash(req.body.password, salt)
+        const salt = await bcryptjs.genSalt(Number(process.env.SALT))
+        const hashPassword = await bcryptjs.hash(req.body.password, salt)
 
         await new User({ ...req.body, password: hashPassword }).save()
         res.status(201).send({ message: "User Created succefully" })
